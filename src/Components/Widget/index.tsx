@@ -53,7 +53,8 @@ function Widget() {
       >
         {
           feedbackSent ? <Success /> :
-            <> {feedbackType ?
+            <>
+            {feedbackType ?
               <Form
                 feedbackType={feedbackType}
                 onFeedbackCanceled={handleRestartFeedback}
@@ -62,10 +63,13 @@ function Widget() {
               <Options onFeedbackTypeChanged={setFeedbackType} />}
             </>
         }
-        {/* <Form
-          feedbackType='BUG'
-        /> */}
-        {/* <Success /> */}
+            {/* {feedbackType ?
+              <Form
+                feedbackType={feedbackType}
+                onFeedbackCanceled={handleRestartFeedback}
+                onFeedbackSent={handleFeedbackSent}
+              /> :
+              <Options onFeedbackTypeChanged={setFeedbackType} />} */}
       </BottomSheet>
     </>
   );
