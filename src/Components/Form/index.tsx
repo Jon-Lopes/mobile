@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native';
 import { ArrowLeft } from 'phosphor-react-native';
 import { captureScreen } from 'react-native-view-shot';
+import * as FileSystem from 'expo-file-system';
 
 import { FeedbackType } from '../../Components/Widget';
 import { Button } from '../../Components/Button';
@@ -10,6 +11,7 @@ import { ScreenshotButton } from '../../Components/ScreenshotButton';
 import { styles } from './styles';
 import { theme } from '../../theme';
 import { feedbackTypes } from '../../utils/feedbackTypes'
+import { api } from '../../libs/api';
 
 interface Props {
     feedbackType: FeedbackType;
@@ -20,6 +22,7 @@ interface Props {
 export function Form({ feedbackType, onFeedbackCanceled, onFeedbackSent}: Props) {
     const [isSendingFeedback, setIsSendingFeedback] = useState(false);
     const [screenshot, setScreenshot] = useState<string | null>(null);
+    const [comment, setComment] = useState('');
     const feedbackTypeInfo = feedbackTypes[feedbackType];
 
     function handleScreenshot() {
@@ -40,6 +43,18 @@ export function Form({ feedbackType, onFeedbackCanceled, onFeedbackSent}: Props)
             return;
         }
         setIsSendingFeedback(true);
+        const screenshotBase64 = screenshot && (await FileSystem.readAsStringAsync(screenshot, { encoding: 'base64' }));
+        try {
+        await api.post('/feedbacks', {
+            type: feedbackType,
+            screenshot: `data:image/png;base64, ${screenshotBase64}`,
+            comment,
+        });
+        onFeedbackSent();
+        } catch (error) {
+            console.log(error);
+            setIsSendingFeedback(false);
+        }
     }
 
     return (
@@ -70,6 +85,7 @@ export function Form({ feedbackType, onFeedbackCanceled, onFeedbackSent}: Props)
                 placeholder="Algo não está funcionando bem? Queremos corrigir. Conte com detalhes o que está acontecendo..."
                 placeholderTextColor={theme.colors.text_secondary}
                 autoCorrect={false}
+                onChangeText={setComment}
             />
 
             <View style={styles.footer}>

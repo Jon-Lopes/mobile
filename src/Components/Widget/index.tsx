@@ -28,7 +28,7 @@ function Widget() {
     setFeedbackSent(false);
   }
 
-  function handleFeedbackSent(){
+  function handleFeedbackSent() {
     setFeedbackSent(true);
   }
 
@@ -52,24 +52,17 @@ function Widget() {
         handleIndicatorStyle={styles.indicator}
       >
         {
-          feedbackSent ? <Success /> :
+          feedbackSent ? <Success onSendAnotherFeedback={handleRestartFeedback}/> :
             <>
-            {feedbackType ?
-              <Form
-                feedbackType={feedbackType}
-                onFeedbackCanceled={handleRestartFeedback}
-                onFeedbackSent={handleFeedbackSent}
-              /> :
-              <Options onFeedbackTypeChanged={setFeedbackType} />}
+              {feedbackType ?
+                <Form
+                  feedbackType={feedbackType}
+                  onFeedbackCanceled={handleRestartFeedback}
+                  onFeedbackSent={handleFeedbackSent}
+                /> :
+                <Options onFeedbackTypeChanged={setFeedbackType} />}
             </>
         }
-            {/* {feedbackType ?
-              <Form
-                feedbackType={feedbackType}
-                onFeedbackCanceled={handleRestartFeedback}
-                onFeedbackSent={handleFeedbackSent}
-              /> :
-              <Options onFeedbackTypeChanged={setFeedbackType} />} */}
       </BottomSheet>
     </>
   );
